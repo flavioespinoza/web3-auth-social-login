@@ -3,6 +3,7 @@ import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES } from "@web3auth/base";
 import RPC from "./web3RPC";
 import "./App.css";
+import Logo from "./assets/img/logo-black-blockless.png";
 
 let styles = {
   button: {
@@ -11,7 +12,7 @@ let styles = {
     cursor: "pointer",
     background: "#0164FF",
     boxSizing: "border-box",
-    borderRadius: "15px",
+    borderRadius: "4px",
     fontSize: 16,
     color: "#f9f9f9",
     fontWeight: 700,
@@ -33,14 +34,14 @@ let styles = {
     minHeight: 200,
     border: "10px solid #f9f9f9",
     boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.03)",
-    borderRadius: "1rem",
+    borderRadius: "4px",
     "&:hover": {
       boxShadow: "0px 24px 33px -9px #0000005C",
     },
   },
 };
 
-const clientId = "BOZ5rhOt2s1_WtdP92lAMQvstoYw7fYr4jrh4rzxjFn7FGxLkgoJkUSjnCRqBObbAHMhWHfjW62dM27iJpjnZo4"; // get from https://dashboard.web3auth.io
+const clientId = "BGHfKtvW1yDVPTOYXpIGZyMkHbIs_eLKudRa8kKEyfpJ0Ms38k5ypycT_PnCyH4iK105T4aQ7ddCglOzo-xVh9g"; // get from https://dashboard.web3auth.io
 
 function App() {
   const [web3auth, setWeb3auth] = useState(null);
@@ -57,11 +58,10 @@ function App() {
           clientId,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
-            rpcTarget: "https://eth.llamarpc.com",
+            chainId: "0x5afe", // Sapphire mainnet
+            rpcTarget: "https://sapphire.oasis.io",
           },
         });
-        console.log(web3auth);
 
         setWeb3auth(web3auth);
         await web3auth.initModal();
@@ -156,62 +156,13 @@ function App() {
     console.log(balance);
   };
 
-  const sendTransaction = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider);
-    const receipt = await rpc.sendTransaction();
-    console.log(receipt);
-  };
-  const sendContractTransaction = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider);
-    const receipt = await rpc.sendContractTransaction();
-    console.log(receipt);
-  };
-
-  const getPrivateKey = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider);
-    const privateKey = await rpc.getPrivateKey();
-    console.log(privateKey);
-  };
-
   const loggedInView = (
     <>
-      <button onClick={getUserInfo} className="card" style={styles.button}>
-        Get User Info
-      </button>
       <button onClick={getChainId} className="card" style={styles.button}>
         Get Chain ID
       </button>
-      <button onClick={getAccounts} className="card" style={styles.button}>
-        Get Accounts
-      </button>
       <button onClick={getBalance} className="card" style={styles.button}>
         Get Balance
-      </button>
-      <button onClick={sendTransaction} className="card" style={styles.button}>
-        Send Transaction
-      </button>
-      <button
-        onClick={sendContractTransaction}
-        className="card"
-        style={styles.button}
-      >
-        Send Approve Tx
-      </button>
-
-      <button onClick={getPrivateKey} className="card" style={styles.button}>
-        Get Private Key
       </button>
       <button onClick={handleLogout} className="card" style={styles.button}>
         Logout
@@ -240,22 +191,19 @@ function App() {
         paddingTop: "2%",
       }}
     >
-      <h3 style={{ textAlign: "center", marginTop: 10 }}>
-        Web3Auth React Example
-      </h3>
-
       {!address && (
         <div className="row">
           <div className="col-md-4"></div>
           <div className="col-md-8">
             <div style={styles.card}>
               <img
-                alt="login_logo"
-                src="https://cdn3d.iconscout.com/3d/premium/thumb/social-media-5806306-4863035.png?f=webp"
+                alt="Blockless"
+                src={Logo}
                 width="200px"
               />
               <h6
                 style={{
+                  paddingTop: 24,
                   color: "#000000",
                   fontWeight: 700,
                   fontSize: 24,
@@ -264,17 +212,13 @@ function App() {
               >
                 Login to Web3Auth
               </h6>
-              <h6 style={{ color: "#000000", fontWeight: 300, fontSize: 16 }}>
-                Login with your favourite social account to enable the world of
-                crypto
-              </h6>
               <button
                 style={{
                   marginTop: 10,
                   backgroundColor: "#8347E5",
                   color: "#ffffff",
                   textDecoration: "none",
-                  borderRadius: "0.5625rem",
+                  borderRadius: "2px",
                   width: "100%",
                   height: 44,
                   fontWeight: 600,
@@ -299,8 +243,8 @@ function App() {
           <div className="col-md-8">
             <div style={styles.card}>
               <img
-                alt="web3auth_logo"
-                src="https://res.cloudinary.com/beincrypto/image/upload/v1661461003/logos/ukflgfdxacovx9yzyrr4.png"
+                alt="Blockless"
+                src={Logo}
                 width="120px"
               />
               <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 20 }}>

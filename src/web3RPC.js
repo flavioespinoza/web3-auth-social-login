@@ -31,7 +31,7 @@ export default class RPC {
     }
   }
 
-  // https://github.com/Web3Auth/web3auth-pnp-examples/tree/main/web-modal-sdk/quick-starts/react-modal-quick-start
+  // Not working for some reason. Added web3 to App.js
   async getBalance() {
     try {
       const web3 = new Web3(this.provider);

@@ -1,0 +1,5 @@
+services:
+  app:
+    image: web3auth-social-login
+    platform: wasi/wasm
+    runtime: io.containerd.wasmedge.v1d

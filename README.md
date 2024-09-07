@@ -23,15 +23,30 @@ Navigate to http://localhost:3000
 
 Build docker image.
 ```shell
-docker build -t web3auth-social-login .
+docker build -t web3auth-social-login:latest .
 ```
 
 Run Docker container.
 ```shell
-docker run --name web3auth-social-login -p 8080:80 -d web3auth-social-login
+docker run --name web3auth-social-login -p 8080:80 -d web3auth-social-login:latest
 ```
 
 Navigate to http://localhost:8080
+
+## WASM
+
+Follow these instructions to enable WASM in the Docker desktop app.
+
+- https://docs.docker.com/desktop/wasm
+
+Run Docker image as WASM.
+
+```shell
+docker run \
+  --runtime=io.containerd.wasmedge.v1 \
+  --platform=wasi/wasm \
+  web3auth-social-login
+```
 
 ## Docker Hub
 

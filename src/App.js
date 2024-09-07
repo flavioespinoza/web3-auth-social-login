@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Web3Auth } from "@web3auth/modal";
 import Web3 from "web3";
-import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
-import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from "@web3auth/base";
+import { CHAIN_NAMESPACES } from "@web3auth/base";
 import RPC from "./web3RPC";
 import "./App.css";
 import Logo from "./assets/img/logo-black-blockless.png";
@@ -82,7 +81,6 @@ function App() {
     setProvider(web3authProvider.provider);
 
     await getUserInfo();
-    await getAccounts();
     await getAccounts();
   };
 

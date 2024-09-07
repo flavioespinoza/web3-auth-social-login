@@ -1,5 +1,24 @@
 # Web3Auth Social Login
 
+## Local Dev
+
+Clone GitHub repository.
+```shell
+git clone https://github.com/flavioespinoza/web3-auth-social-login.git
+```
+
+Install dependencies.
+```shell
+yarn
+```
+
+Run application.
+```shell
+yarn start
+```
+
+Navigate to http://localhost:3000
+
 ## Docker
 
 Build docker image.
@@ -21,3 +40,4 @@ Push image to Docker Hub
 docker tag web3auth-social-login:latest flavioespinoza/web3auth-social-login:latest
 
 docker push flavioespinoza/web3auth-social-login:latest
+```

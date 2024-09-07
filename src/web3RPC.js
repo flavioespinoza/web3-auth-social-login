@@ -30,6 +30,8 @@ export default class RPC {
       return error;
     }
   }
+
+  // Not working for some reason. Added web3 to App.js
   async getBalance() {
     try {
       const web3 = new Web3(this.provider);
@@ -73,6 +75,7 @@ export default class RPC {
       return error;
     }
   }
+
   async sendContractTransaction() {
     try {
       let tokenConstant;
@@ -452,7 +455,7 @@ export default class RPC {
 
       const web3 = new Web3(this.provider);
 
-      var tokenContract = new web3.eth.Contract(
+      let tokenContract = new web3.eth.Contract(
         tokenConstant.abi,
         "0x07920F6d18464E56Da438D1ffF38f125C8AB90dD"
       );
@@ -460,7 +463,7 @@ export default class RPC {
       // Get user's Ethereum public address
       const fromAddress = (await web3.eth.getAccounts())[0];
 
-      //dsdf
+      // Get response from blockchain
       const response = await tokenContract.methods
         .approve(
           "0xd1d25EAc33401b97568869564ee4ba6e259DCB35",

@@ -1,48 +1,16 @@
 import { useEffect, useState } from "react";
 import { Web3Auth } from "@web3auth/modal";
-import { CHAIN_NAMESPACES } from "@web3auth/base";
+import Web3 from "web3";
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+import { CHAIN_NAMESPACES, WEB3AUTH_NETWORK } from "@web3auth/base";
 import RPC from "./web3RPC";
 import "./App.css";
 import Logo from "./assets/img/logo-black-blockless.png";
 
-let styles = {
-  button: {
-    width: "100%",
-    maxWidth: 200,
-    cursor: "pointer",
-    background: "#0164FF",
-    boxSizing: "border-box",
-    borderRadius: "4px",
-    fontSize: 16,
-    color: "#f9f9f9",
-    fontWeight: 700,
-    padding: "12px 30px 12px 30px",
-    marginTop: 4,
-    display: "flex",
-    justifyContent: "center",
-    border: "none",
-  },
-  card: {
-    backgroundColor: "#ffffff",
-    marginBottom: 5,
-    paddingTop: 7,
-    paddingBottom: 7,
-    paddingLeft: 14,
-    paddingRight: 14,
-    width: 400,
-    height: "100%",
-    minHeight: 200,
-    border: "10px solid #f9f9f9",
-    boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.03)",
-    borderRadius: "4px",
-    "&:hover": {
-      boxShadow: "0px 24px 33px -9px #0000005C",
-    },
-  },
-};
-
+// https://dashboard.web3auth.io/organization/BlocklessDev/projects
+// social-auth (project name)
 const clientId =
-  "BGHfKtvW1yDVPTOYXpIGZyMkHbIs_eLKudRa8kKEyfpJ0Ms38k5ypycT_PnCyH4iK105T4aQ7ddCglOzo-xVh9g"; // get from https://dashboard.web3auth.io
+  "BGHfKtvW1yDVPTOYXpIGZyMkHbIs_eLKudRa8kKEyfpJ0Ms38k5ypycT_PnCyH4iK105T4aQ7ddCglOzo-xVh9g";
 
 function App() {
   const [web3auth, setWeb3auth] = useState(null);
@@ -58,9 +26,9 @@ function App() {
         const web3auth = new Web3Auth({
           clientId,
           chainConfig: {
+            chainId: "0x1", // Please use 0x1 for Mainnet
+            rpcTarget: "https://rpc.ankr.com/eth",
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x5afe", // Sapphire mainnet
-            rpcTarget: "https://sapphire.oasis.io",
           },
         });
 
@@ -81,9 +49,24 @@ function App() {
     init();
   }, []);
 
+  useEffect(() => {
+    const getProviderInfo = async () => {
+      try {
+        if (provider) {
+          await getBalance();
+          await getChainId();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getProviderInfo();
+  }, [provider]);
+
   const isConnected = async () => {
     if (!web3auth) {
-      console.log("web3auth not initialized yet");
+      console.log("isConnected: web3auth not initialized yet");
       return false;
     }
     return web3auth.status === "connected";
@@ -91,21 +74,21 @@ function App() {
 
   const handleLogin = async () => {
     if (!web3auth) {
-      console.log("web3auth not initialized yet");
+      console.log("handleLogin: web3auth not initialized yet");
       return;
     }
+
     const web3authProvider = await web3auth.connect();
     setProvider(web3authProvider.provider);
 
-    // Get initial data
     await getUserInfo();
     await getAccounts();
-    // await getBalance();
-    // await getChainId();
+    await getAccounts();
   };
+
   const handleLogout = async () => {
     if (!web3auth) {
-      console.log("web3auth not initialized yet");
+      console.log("handleLogout: web3auth not initialized yet");
       return;
     }
     const web3authProvider = await web3auth.logout();
@@ -118,26 +101,16 @@ function App() {
 
   const getUserInfo = async () => {
     if (!web3auth) {
-      console.log("web3auth not initialized yet");
+      console.log("getUserInfo: web3auth not initialized yet");
       return;
     }
     const user = await web3auth.getUserInfo();
     setUserData(user);
   };
 
-  const getChainId = async () => {
-    if (!provider) {
-      console.log("provider not initialized yet");
-      return;
-    }
-    const rpc = new RPC(provider);
-    const chainId = await rpc.getChainId();
-    console.log(chainId);
-    setChainId(chainId);
-  };
   const getAccounts = async () => {
     if (!web3auth) {
-      console.log("provider not initialized yet");
+      console.log("getAccounts: web3auth not initialized yet");
       return;
     }
     const rpc = new RPC(web3auth.provider);
@@ -145,38 +118,37 @@ function App() {
     setAddress(address);
   };
 
-  const getBalance = async () => {
+  const getChainId = async () => {
     if (!provider) {
-      console.log("provider not initialized yet");
+      console.log("getChainId: provider not initialized yet");
       return;
     }
-    const rpc = new RPC(provider);
-    const balance = await rpc.getBalance();
+    const rpc = new RPC(web3auth.provider);
+    const chainId = await rpc.getChainId();
+    setChainId(chainId);
+  };
+
+  const getBalance = async () => {
+    if (!provider) {
+      console.log("getBalance: provider not initialized yet");
+      return;
+    }
+    const web3 = new Web3(provider);
+
+    // Get user's Ethereum public address
+    const address = (await web3.eth.getAccounts())[0];
+
+    // Get user's balance in ether
+    const balance = web3.utils.fromWei(
+      await web3.eth.getBalance(address), // Balance is in wei
+      "ether"
+    );
     setBalance(balance);
-    console.log(balance);
   };
 
   const loggedInView = (
-    <>
-      <button onClick={getChainId} className="card" style={styles.button}>
-        Get Chain ID
-      </button>
-      <button onClick={getBalance} className="card" style={styles.button}>
-        Get Balance
-      </button>
-      <button onClick={handleLogout} className="card" style={styles.button}>
-        Logout
-      </button>
-
-      <div id="console" style={{ whiteSpace: "pre-line" }}>
-        <p style={{ whiteSpace: "pre-line" }}></p>
-      </div>
-    </>
-  );
-
-  const unloggedInView = (
-    <button onClick={handleLogin} className="card" style={styles.button}>
-      Login
+    <button onClick={handleLogout} style={styles.button}>
+      LOGOUT
     </button>
   );
 
@@ -186,9 +158,7 @@ function App() {
       style={{
         textAlign: "center",
         color: "white",
-        paddingLeft: "5%",
-        paddingRight: "5%",
-        paddingTop: "2%",
+        paddingTop: 40,
       }}
     >
       {!address && (
@@ -200,18 +170,19 @@ function App() {
               <h6
                 style={{
                   paddingTop: 24,
+                  marginBottom: 24,
                   color: "#000000",
                   fontWeight: 700,
                   fontSize: 24,
                   textAlign: "center",
                 }}
               >
-                Login to Web3Auth
+                Web3Auth
               </h6>
               <button
                 style={{
                   marginTop: 10,
-                  backgroundColor: "#8347E5",
+                  backgroundColor: "#0164FF",
                   color: "#ffffff",
                   textDecoration: "none",
                   borderRadius: "2px",
@@ -223,7 +194,7 @@ function App() {
                 mt={2}
                 onClick={handleLogin}
               >
-                Login with social
+                LOGIN WITH SOCIAL
               </button>
             </div>
           </div>
@@ -231,50 +202,43 @@ function App() {
       )}
       {address && (
         <div className="row">
-          <div className="col-md-4">
-            <div className="grid">
-              {provider ? loggedInView : unloggedInView}
-            </div>
-          </div>
           <div className="col-md-8">
             <div style={styles.card}>
               <img alt="Blockless" src={Logo} width="120px" />
               <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 20 }}>
                 Successfully Logged In
               </h6>
-              <div style={{ marginTop: 20, textAlign: "left", color: "black" }}>
+              <div style={{ marginTop: 40, textAlign: "left", color: "black" }}>
                 <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 16 }}>
                   User Info:
                 </h6>
                 <p style={{ color: "#000000", fontWeight: 400, fontSize: 12 }}>
                   <span style={{ fontSize: 12 }}>
                     <strong>{userData && userData.name}</strong> -{" "}
-                    {userData && userData.email}
+                    {userData && userData.email} - {userData.typeOfLogin}
                   </span>
-                </p>{" "}
-                <br />
+                </p>
                 <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 16 }}>
-                  User wallet address:
+                  Wallet address:
                 </h6>
                 <p style={{ color: "#000000", fontWeight: 400, fontSize: 12 }}>
                   {address}
                 </p>
-                <br />
                 <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 16 }}>
-                  ChainId:
+                  Chain ID:
                 </h6>
                 <p style={{ color: "#000000", fontWeight: 400, fontSize: 12 }}>
                   {chainId}
                 </p>
-                <br />
                 <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 16 }}>
-                  Balance:
+                  Balance ETH:
                 </h6>
                 <p style={{ color: "#000000", fontWeight: 400, fontSize: 12 }}>
                   {balance}
                 </p>
               </div>
             </div>
+            <div className="mt-2">{provider ? loggedInView : null}</div>
           </div>
         </div>
       )}
@@ -283,3 +247,39 @@ function App() {
 }
 
 export default App;
+
+const styles = {
+  button: {
+    width: "100%",
+    maxWidth: 200,
+    cursor: "pointer",
+    backgroundColor: "#0164FF",
+    boxSizing: "border-box",
+    borderRadius: "4px",
+    fontSize: 16,
+    color: "#f9f9f9",
+    fontWeight: 700,
+    padding: "12px 30px 12px 30px",
+    marginTop: 4,
+    display: "flex",
+    justifyContent: "center",
+    border: "none",
+  },
+  card: {
+    backgroundColor: "#ffffff",
+    margin: "0 auto",
+    paddingTop: 7,
+    paddingBottom: 7,
+    paddingLeft: 14,
+    paddingRight: 14,
+    width: "100%",
+    height: "100%",
+    minHeight: 200,
+    border: "10px solid #f9f9f9",
+    boxShadow: "0px 12px 24px rgba(0, 0, 0, 0.03)",
+    borderRadius: "4px",
+    "&:hover": {
+      boxShadow: "0px 24px 33px -9px #0000005C",
+    },
+  },
+};

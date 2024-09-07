@@ -41,7 +41,8 @@ let styles = {
   },
 };
 
-const clientId = "BGHfKtvW1yDVPTOYXpIGZyMkHbIs_eLKudRa8kKEyfpJ0Ms38k5ypycT_PnCyH4iK105T4aQ7ddCglOzo-xVh9g"; // get from https://dashboard.web3auth.io
+const clientId =
+  "BGHfKtvW1yDVPTOYXpIGZyMkHbIs_eLKudRa8kKEyfpJ0Ms38k5ypycT_PnCyH4iK105T4aQ7ddCglOzo-xVh9g"; // get from https://dashboard.web3auth.io
 
 function App() {
   const [web3auth, setWeb3auth] = useState(null);
@@ -89,7 +90,6 @@ function App() {
   };
 
   const handleLogin = async () => {
-    console.log("hitting");
     if (!web3auth) {
       console.log("web3auth not initialized yet");
       return;
@@ -97,7 +97,7 @@ function App() {
     const web3authProvider = await web3auth.connect();
     setProvider(web3authProvider.provider);
 
-    // Calling fns to get initial data
+    // Get initial data
     await getUserInfo();
     await getAccounts();
     // await getBalance();
@@ -196,11 +196,7 @@ function App() {
           <div className="col-md-4"></div>
           <div className="col-md-8">
             <div style={styles.card}>
-              <img
-                alt="Blockless"
-                src={Logo}
-                width="200px"
-              />
+              <img alt="Blockless" src={Logo} width="200px" />
               <h6
                 style={{
                   paddingTop: 24,
@@ -242,11 +238,7 @@ function App() {
           </div>
           <div className="col-md-8">
             <div style={styles.card}>
-              <img
-                alt="Blockless"
-                src={Logo}
-                width="120px"
-              />
+              <img alt="Blockless" src={Logo} width="120px" />
               <h6 style={{ color: "#000000", fontWeight: 700, fontSize: 20 }}>
                 Successfully Logged In
               </h6>

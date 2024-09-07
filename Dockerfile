@@ -1,4 +1,7 @@
-# Use the official Node.js runtime as the base image
+# Use the official Ubuntu runtime as the base image
+FROM ubuntu:22.04 as base
+
+# Use the official Node.js runtime as the build image
 FROM node:18 as build
 
 # Set the working directory in the container

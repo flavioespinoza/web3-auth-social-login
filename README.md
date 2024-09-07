@@ -4,7 +4,7 @@
 
 Clone GitHub repository.
 ```shell
-git clone https://github.com/flavioespinoza/web3-auth-social-login.git
+git clone https://github.com/flavioespinoza/web3auth-social-login.git
 ```
 
 Install dependencies.

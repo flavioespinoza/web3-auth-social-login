@@ -1,5 +1,5 @@
 services:
   app:
-    image: web3auth-social-login
+    image: secondstate/rust-example-server
     platform: wasi/wasm
-    runtime: io.containerd.wasmedge.v1d
+    runtime: io.containerd.wasmedge.v1

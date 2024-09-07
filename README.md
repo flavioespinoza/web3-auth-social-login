@@ -52,5 +52,5 @@ Run Docker image as WASM.
 docker run \
   --runtime=io.containerd.wasmedge.v1 \
   --platform=wasi/wasm \
-  web3auth-social-login
+  flavioespinoza/web3auth-social-login
 ```

@@ -34,23 +34,8 @@ docker run -p 8080:80 -d flavioespinoza/web3auth-social-login:latest
 Navigate to http://localhost:8080
 
 ## Docker Hub
-
+s
 Push image to Docker Hub
 ```shell
 docker push flavioespinoza/web3auth-social-login:latest
-```
-
-## WASM
-
-Follow these instructions to enable WASM in the Docker desktop app.
-
-- https://docs.docker.com/desktop/wasm
-
-Run Docker image as WASM.
-
-```shell
-docker run \
-  --runtime=io.containerd.wasmedge.v1 \
-  --platform=wasi/wasm \
-  flavioespinoza/web3auth-social-login
 ```

@@ -1,5 +1,7 @@
 # Web3Auth Social Login
 
+Social Login for Web3 authentication
+
 ## Local Dev
 
 Clone GitHub repository.
